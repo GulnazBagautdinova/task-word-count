@@ -16,6 +16,7 @@ type result struct{
 	url string
 	count int
 	err error
+	
 }
 
 
