@@ -79,7 +79,7 @@ func main() {
 	for scanner.Scan() {	
 	url = scanner.Text()
   // Set the number of goroutines we need to wait for while
-    goroutines  <- struct{}{}
+       goroutines  <- struct{}{}
        wg.Add(1) 
      go func (url string , results chan <- result, goroutines <- chan struct{}, wg *sync.WaitGroup) {
 	    results <- search (url)   
