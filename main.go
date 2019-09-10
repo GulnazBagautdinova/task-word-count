@@ -79,7 +79,11 @@ func main() {
 	for scanner.Scan() {	
 	url = scanner.Text()
   // Set the number of goroutines we need to wait for while
+<<<<<<< HEAD
     goroutines  <- struct{}{}
+=======
+       goroutines  <- struct{}{}
+>>>>>>> f9df75b2c14a9fa62bd88e551a26d4cc20738d29
        wg.Add(1) 
      go func (url string , results chan <- result, goroutines <- chan struct{}, wg *sync.WaitGroup) {
 	    results <- search (url)   
@@ -94,4 +98,8 @@ func main() {
 	close(goroutines)
 	close(results)
     <- doneChan
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f9df75b2c14a9fa62bd88e551a26d4cc20738d29
