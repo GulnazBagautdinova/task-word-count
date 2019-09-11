@@ -67,10 +67,10 @@ func main() {
 	go func (results <- chan result, doneChan chan <- struct {}) {
 		var total int
 		for  res := range results{
-			fmt.Printf ("Count for %s  - %d\n" , res.url, res.count )
+			fmt.Printf ("Count for %s : %d\n" , res.url, res.count )
 			total +=  res.count
 		}
-		fmt.Printf("Total count: %d\n", total)
+		fmt.Printf("Total: %d\n", total)
 		doneChan <- struct{}{}
 	} (results, doneChan)
 
