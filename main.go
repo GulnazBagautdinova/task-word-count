@@ -28,10 +28,22 @@ func search (url string) result {
 	}
 	
 	resp, err := http.Get(url)
+
+	// Checks to know we have received a proper url
 	if err != nil {
-		log.Fatal(err)
-	}
+		res.err = errors.New("Cannot access site")
+			res.url = url
+			return res
+		}
+	
 	defer resp.Body.Close()
+  
+	// Check the status code for a 200 to check we have received a proper response
+	if resp.StatusCode != 200 {
+		res.err = fmt.Errorf("HTTP Response Error %d\n", resp.StatusCode)
+		res.url = url
+		return res
+	}
 
 	if resp.StatusCode == http.StatusOK {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
@@ -67,7 +79,11 @@ func main() {
 	go func (results <- chan result, doneChan chan <- struct {}) {
 		var total int
 		for  res := range results{
-			fmt.Printf ("Count for %s : %d\n" , res.url, res.count )
+			if res.err == nil{
+			fmt.Printf ("Count for %s : %d\n" , res.url, res.count)
+			} else {
+		    fmt.Printf ("Count for %s : %s\n" , res.url,  res.err )
+			}
 			total +=  res.count
 		}
 		fmt.Printf("Total: %d\n", total)
