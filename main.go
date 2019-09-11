@@ -26,7 +26,7 @@ func search (url string) result {
 		res.err = errors.New("empty url")
 		return res
 	}
-
+	
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -40,7 +40,7 @@ func search (url string) result {
 		}
 		bodyString := string(bodyBytes)
 
-		// Check the page for the search term.
+		// Check the page for the  term Go
 		reg := regexp.MustCompile(`Go`)
 		matched := reg.FindAllString(bodyString,-1)
 		countmatched := len(matched)
@@ -53,10 +53,14 @@ func search (url string) result {
 }
 
 func main() {
-	var f *os.File
-	f = os.Stdin
-	defer f.Close()
-	//var urls []string
+	fi, err := os.Stdin.Stat()
+	if err != nil {
+		log.Fatalf("Stdin: %s", err)
+	}
+
+	if (fi.Mode() & os.ModeCharDevice != 0){
+		log.Fatal("data must be passed only from stdin")
+	}
 	results := make(chan result)
 	doneChan := make(chan struct{})
 
@@ -70,15 +74,15 @@ func main() {
 		doneChan <- struct{}{}
 	} (results, doneChan)
 
-	// Setup a wait group so we can process all the feeds.
+	// Setup a wait group in order to process all the urls
 	var wg sync.WaitGroup
 	var url string
-
+	// Set the number of goroutines 
+	// Processes urls
 	goroutines := make(chan struct{}, 5)
-	scanner := bufio.NewScanner(f)
+	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		url = scanner.Text()
-		// Set the number of goroutines we need to wait for while
 		goroutines  <- struct{}{}
 		wg.Add(1)
 		go func (url string , results chan <- result, goroutines <- chan struct{}, wg *sync.WaitGroup) {
@@ -88,8 +92,8 @@ func main() {
 		}(url , results, goroutines, &wg)
 	}
 
-	// Launch a goroutine to monitor when all the work is done.
-	// Wait for everything to be processed.
+	// Launch a goroutine to monitor when all the work is done
+	// Wait for everything to be processed
 	wg.Wait()
 	close(goroutines)
 	close(results)
