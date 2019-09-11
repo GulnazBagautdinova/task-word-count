@@ -13,6 +13,7 @@ $ echo -e 'https://golang.org\nhttps://golang.org' | go run 1.go
 Count for https://golang.org: 9
 
 Count for https://golang.org: 9
+
 Total: 18
 
 Каждый URL должен начать обрабатываться сразу после вычитывания
